@@ -80,7 +80,7 @@ sudo dnf install -y zsh tilix yakuake bat zsh-autosuggestions zsh-syntax-highlig
 
 #Install Add
 echo "Instalando Paquetes Adicionales";
-sudo dnf install -y git wget curl latte-dock;
+sudo dnf install -y git wget curl latte-dock barrier;
 
 #Install KVM
 echo "Verificamos si el sistema permite Virtualizacion";
