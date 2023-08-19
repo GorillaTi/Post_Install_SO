@@ -5,11 +5,20 @@ echo "Actualizando Sistema";
 sudo dnf upgrade -y;
 
 #Configure DNF for Faster Downloads of Packages
-#sudo nano /etc/dnf/dnf.conf
 echo "Insertando configuraciones en dnf";
-sudo echo "fastestmirror=True" >> /etc/dnf/dnf.conf;
-sudo echo "max_parallel_downloads=10" >> /etc/dnf/dnf.conf;
-sudo echo "defaultyes=True" >> /etc/dnf/dnf.conf;
+sudo cp -rpfv /etc/dnf/dnf.conf /etc/dnf/dnf.conf.bkp
+
+#Metodo 1
+#echo "fastestmirror=True" | sudo tee -a /etc/dnf/dnf.conf
+#echo "max_parallel_downloads=10" | sudo tee -a /etc/dnf/dnf.conf;
+#echo "defaultyes=True" | sudo tee -a /etc/dnf/dnf.conf;
+
+#Metodo 2
+sudo tee -a /etc/dnf/dnf.conf <<EOF
+fastestmirror=True
+max_parallel_downloads=10
+defaultyes=True
+EOF
 
 echo "Actualizando Sistema";
 sudo dnf upgrade -y;
