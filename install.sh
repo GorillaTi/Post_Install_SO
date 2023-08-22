@@ -1,25 +1,23 @@
 #!/bin/bash
 #Create By: Edmundo Cespedes A.
-#Update System
-echo "Actualizando Sistema";
-sudo dnf upgrade -y;
 
 #Configure DNF for Faster Downloads of Packages
 echo "Insertando configuraciones en dnf";
 sudo cp -rpfv /etc/dnf/dnf.conf /etc/dnf/dnf.conf.bkp
 
-#Metodo 1
+#Metod 1
 #echo "fastestmirror=True" | sudo tee -a /etc/dnf/dnf.conf
 #echo "max_parallel_downloads=10" | sudo tee -a /etc/dnf/dnf.conf;
 #echo "defaultyes=True" | sudo tee -a /etc/dnf/dnf.conf;
 
-#Metodo 2
+#Metod 2
 sudo tee -a /etc/dnf/dnf.conf <<EOF
 fastestmirror=True
 max_parallel_downloads=10
 defaultyes=True
 EOF
 
+#Update System
 echo "Actualizando Sistema";
 sudo dnf upgrade -y;
 
@@ -37,6 +35,7 @@ sudo dnf config-manager --set-enabled rpmfusion-free-updates-testing;
 echo "Abilitando Repsoitorios NoFree";
 sudo dnf config-manager --set-enabled rpmfusion-nonfree-updates-testing;
 
+#Update System
 echo "Actualozando OS";
 sudo dnf upgrade --refresh -y;
 
@@ -64,16 +63,6 @@ sudo dnf install -y nodejs npm;
 echo "Instalando TLP";
 sudo dnf install -y tlp tlp-rdw;
 
-#Install Multimedia Plugins
-echo "Instalando VLC";
-sudo dnf install -y vlc vlc-extras.x86_64;
-
-#Install Plugins Multimedia
-echo "Inslando Plugins";
-sudo dnf install gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel;
-sudo dnf install lame\* --exclude=lame-devel;
-sudo dnf group upgrade --with-optional Multimedia;
-
 #Install Terminal
 echo "Instalando Terminal";
 sudo dnf install -y zsh tilix yakuake bat zsh-autosuggestions zsh-syntax-highlighting fzf xclipboard ;
@@ -82,21 +71,31 @@ sudo dnf install -y zsh tilix yakuake bat zsh-autosuggestions zsh-syntax-highlig
 echo "Instalando Paquetes Adicionales";
 sudo dnf install -y git wget curl latte-dock barrier;
 
+#Install Multimedia Plugins
+echo "Instalando VLC";
+sudo dnf install -y vlc vlc-extras.x86_64;
+
+#Install Plugins Multimedia
+echo "Inslando Plugins";
+sudo dnf install -y gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel;
+sudo dnf install -y lame\* --exclude=lame-devel;
+sudo dnf group upgrade -y --with-optional Multimedia;
+
 #Install KVM
 echo "Verificamos si el sistema permite Virtualizacion";
 cat /proc/cpuinfo | egrep "vmx|svm";
 echo "Instalando Virt-Manager";
-sudo dnf -y install libvirt virt-install qemu-kvm virt-manager;
+sudo dnf install -y libvirt virt-install qemu-kvm virt-manager;
 echo "Habilitamos el Servicio de Virtulizacion"
 sudo systemctl start libvirtd;
 sudo systemctl enable libvirtd;
-echo  "Para que nuestro usuario pueda tenga acceso al administrador";
+echo "Para que nuestro usuario pueda tenga acceso al administrador";
 sudo usermod -aG libvirt $USER;
 
 #Instalando VirtualBox
 #Instando dependencias
 echo "Instalando dependencias para VirtualBox";
-sudo dnf -y install kernel-headers kernel-devel dkms elfutils-libelf-devel qt5-qtx11extras;
+sudo dnf install -y kernel-headers kernel-devel dkms elfutils-libelf-devel qt5-qtx11extras;
 #Insertando Repositorio de VirtualBox
 echo "Agregando repositorio de VirtualBox";
 cat <<EOF | sudo tee /etc/yum.repos.d/virtualbox.repo
@@ -114,7 +113,7 @@ sudo dnf search virtualbox;
 
 #Instalando VirtualBox
 echo "Instalando VirtualBox";
-sudo dnf install VirtualBox-7.0;
+sudo dnf install -y VirtualBox-7.0;
 
 #Agregando y creando usuarios para ejecutar VirtualBox
 echo "Agregando el ususrioa VirtualBox";
@@ -168,11 +167,20 @@ sudo dnf install -y https://github.com/marktext/marktext/releases/download/v0.17
 #Instalar FirewallDGUI
 echo "Instalando FirewallD-GUI";
 sudo firewall-cmd --version;
-sudo dnf install firewalld -y;
+sudo dnf install -y firewalld ;
 systemctl status firewalld;
-sudo dnf install firewall-config -y;
-sudo dnf install plasma-firewall-firewalld -y;
+sudo dnf install -y firewall-config;
+sudo dnf install -y plasma-firewall-firewalld;
 
 #Instalar Filezilla
 echo "Instalando Filezilla";
-sudo dnf install filezilla -y;
+sudo dnf install -y filezilla;
+
+#Install balena-etcher
+#Install repo
+curl -1sLf \
+   'https://dl.cloudsmith.io/public/balena/etcher/setup.rpm.sh' \
+   | sudo -E bash
+sudo dnf update -y
+#Install aplication
+sudo dnf install -y balena-etcher-electron
